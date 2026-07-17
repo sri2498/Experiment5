@@ -60,6 +60,7 @@ from .block import (
     SCDown,
     TorchVision,
 )
+from .cfar import C3k2DCA, DCABlock, RobustCFARGate
 from .conv import (
     CBAM,
     ChannelAttention,
@@ -138,9 +139,12 @@ __all__ = (
     "C2fPSA",
     "C3Ghost",
     "C3k2",
+    "C3k2DCA",
     "C3x",
     "CBFuse",
     "CBLinear",
+    "DCABlock",
+    "RobustCFARGate",
     "ChannelAttention",
     "Classify",
     "Concat",

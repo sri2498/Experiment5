@@ -36,6 +36,7 @@ from ultralytics.nn.modules import (
     C2fPSA,
     C3Ghost,
     C3k2,
+    C3k2DCA,
     C3x,
     CBFuse,
     CBLinear,
@@ -62,6 +63,7 @@ from ultralytics.nn.modules import (
     RepNCSPELAN4,
     RepVGGDW,
     ResNetLayer,
+    RobustCFARGate,
     RTDETRDecoder,
     SCDown,
     Segment,
@@ -1894,6 +1896,7 @@ def parse_model(d, ch, verbose=True):
             C2,
             C2f,
             C3k2,
+            C3k2DCA,
             RepNCSPELAN4,
             ELAN1,
             ADown,
@@ -1920,6 +1923,7 @@ def parse_model(d, ch, verbose=True):
             C2,
             C2f,
             C3k2,
+            C3k2DCA,
             C2fAttn,
             C3,
             C3TR,
@@ -1960,7 +1964,7 @@ def parse_model(d, ch, verbose=True):
             if m in repeat_modules:
                 args.insert(2, n)  # number of repeats
                 n = 1
-            if m is C3k2:  # for M/L/X sizes
+            if m in {C3k2, C3k2DCA}:  # for M/L/X sizes
                 legacy = False
                 if scale in "mlx":
                     args[3] = True
@@ -2022,6 +2026,9 @@ def parse_model(d, ch, verbose=True):
             c2 = args[0]
             c1 = ch[f]
             args = [*args[1:]]
+        elif m is RobustCFARGate:  # channel-preserving, args are (k_bg, k_guard, t_trunc)
+            c2 = ch[f]
+            args = [c2, *args]
         else:
             c2 = ch[f]
 
