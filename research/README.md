@@ -81,6 +81,8 @@ resource-optimised" constraint (the exact summary is printed by `model.info()` i
 |---|---|
 | `ultralytics/nn/modules/cfar.py` | RobustCFARGate, DCABlock, C3k2DCA |
 | `ultralytics/cfg/models/11/yolo11-cfar.yaml` | CFAR-YOLOv11 architecture |
+| `ultralytics/cfg/models/11/yolo11-cfar-gate.yaml` | ablation A1: RobustCFARGate only |
+| `ultralytics/cfg/models/11/yolo11-cfar-dca.yaml` | ablation A2: C3k2DCA only |
 | `research/cfar_demo.py` | classical TS-CFAR on image chips (analysis / paper figures) |
 | `research/coco_to_yolo.py` | raw HRSID (COCO JSON) → YOLO layout converter |
 | `notebooks/CFAR_YOLOv11_Colab.ipynb` | end-to-end Colab: setup → data → train → evaluate → compare |
@@ -104,9 +106,17 @@ YOLO("yolo11n-cfar.yaml").train(data="hrsid.yaml", epochs=150, imgsz=800, batch=
 
 ### Ablations
 
-- *gates only*: replace `C3k2DCA` with `C3k2` in the YAML;
-- *DCA only*: delete the two `RobustCFARGate` lines (fix `Concat`/`Detect` indices accordingly);
-- *gate windows*: `RobustCFARGate` YAML args are `[k_bg, k_guard]` (optionally `t_trunc`).
+Ready-made configs for the four-variant component ablation (notebook §9 trains them and builds the combined
+table automatically):
+
+| variant | config | RobustCFARGate | C3k2DCA |
+|---|---|---|---|
+| baseline | `yolo11.yaml` | – | – |
+| A1: gates only | `yolo11-cfar-gate.yaml` | ✓ | – |
+| A2: DCA only | `yolo11-cfar-dca.yaml` | – | ✓ |
+| full | `yolo11-cfar.yaml` | ✓ | ✓ |
+
+Gate-window sensitivity: `RobustCFARGate` YAML args are `[k_bg, k_guard]` (optional third arg `t_trunc`).
 
 ## 5. Mapping to the proposal
 
